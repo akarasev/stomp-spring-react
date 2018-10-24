@@ -19,4 +19,4 @@ Frontend app was bootstrapped with [Create React App](https://github.com/faceboo
 
 # Working with STOMP client
 
-Working with [STOMP client library](https://www.npmjs.com/package/@stomp/stompjs) implemented into `src/App.js`
+Working with [STOMP client library](https://www.npmjs.com/package/@stomp/stompjs) implemented into [src/App.js](./src/App.js)
