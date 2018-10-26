@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Stomp } from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 import logo from './logo.svg';
 import './App.css';
 
@@ -11,19 +11,28 @@ class App extends Component {
 
   componentDidMount() {
     console.log('Component did mount');
-    this.client = Stomp.client('ws://localhost:8080/stomp');
+    // The compat mode syntax is totally different, converting to v5 syntax
+    // Client is imported from '@stomp/stompjs'
+    this.client = new Client();
 
-    this.client.onConnect(() => {
-      console.log('onConnect');
+    this.client.configure({
+      brokerURL: 'ws://localhost:8080/stomp',
+      onConnect: () => {
+        console.log('onConnect');
 
-      this.client.subscribe('/queue/now', message => {
-        console.log(message);
-        this.setState({serverTime: message.body});
-      });
+        this.client.subscribe('/queue/now', message => {
+          console.log(message);
+          this.setState({serverTime: message.body});
+        });
 
-      this.client.subscribe('/topic/greetings', message => {
-        alert(message.body);
-      });
+        this.client.subscribe('/topic/greetings', message => {
+          alert(message.body);
+        });
+      },
+      // Helps during debugging, remove in production
+      debug: (str) => {
+        console.log(new Date(), str);
+      }
     });
 
     this.client.activate();
