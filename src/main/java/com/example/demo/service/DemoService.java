@@ -4,7 +4,7 @@ import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -40,6 +40,7 @@ public class DemoService {
         Response response = client.newCall(request).execute();
         String responseBody = response.body().string();
         logger.info("Response: {}", responseBody);
+        String tmp = "This is only a test";
 
         EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
         AmazonS3 s3client = AmazonS3ClientBuilder.standard()
@@ -47,8 +48,9 @@ public class DemoService {
                 .withCredentials(credentialsProvider)
                 .build();
 
-        ObjectListing objectListing = s3client.listObjects("sea-1074-amazon-codeguru-poc");
+        ListObjectsV2Result objectListing = s3client.listObjectsV2("sea-1074-amazon-codeguru-poc");
         logger.info("Test bucket listing: {}", objectListing);
+        objectListing.getObjectSummaries().forEach(item -> logger.info("Object summary: {}", item.toString()));
 
         s3client.putObject("sea-1074-amazon-codeguru-poc", "user.json", responseBody);
 
